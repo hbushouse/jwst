@@ -24,13 +24,13 @@ class FlatField(Step):
     # Load the spec from a file
 
     def process(self, science, flat):
-        from jwst import datamodels
+        from ... import datamodels
 
         self.log.info("Removing flat field")
         self.log.info("Threshold: {0}".format(self.threshold))
         library_function()
 
-        output = models.ImageModel(data=science.data - flat.data)
+        output = datamodels.ImageModel(data=science.data - flat.data)
         return output
 
 
@@ -40,12 +40,12 @@ class Combine(Step):
     """
 
     def process(self, images):
-        from jwst import datamodels
+        from ... import datamodels
 
         combined = np.zeros((50, 50))
         for image in images:
             combined += image.data
-        return models.ImageModel(data=combined)
+        return datamodels.ImageModel(data=combined)
 
 
 class Display(Step):
@@ -63,10 +63,10 @@ class MultiplyBy2(Step):
     """
 
     def process(self, image):
-        from jwst import datamodels
+        from ... import datamodels
 
-        with models.ImageModel(image) as dm:
-            with models.ImageModel() as dm2:
+        with datamodels.ImageModel(image) as dm:
+            with datamodels.ImageModel() as dm2:
                 dm2.data = dm.data * 2
                 return dm2
 
@@ -89,17 +89,17 @@ class TestPipeline(Pipeline):
     """
 
     def process(self, *args):
-        from jwst import datamodels
+        from ... import datamodels
 
-        science = models.open(self.science_filename)
+        science = datamodels.open(self.science_filename)
         if self.flat_filename is None:
             self.flat_filename = join(dirname(__file__), "data/flat.fits")
-        flat = models.open(self.flat_filename)
+        flat = datamodels.open(self.flat_filename)
         calibrated = []
         calibrated.append(self.flat_field(science, flat))
         combined = self.combine(calibrated)
         self.display(combined)
-        dm = models.ImageModel(combined)
+        dm = datamodels.ImageModel(combined)
         dm.save(self.output_filename)
         return dm
 
@@ -171,7 +171,7 @@ def test_pipeline_commandline():
 
 def test_pipeline_commandline_class():
     args = [
-        'jwst..stpipe.tests.test_pipeline.TestPipeline',
+        'jwst.stpipe.tests.test_pipeline.TestPipeline',
         '--logcfg={0}'.format(
             abspath(join(dirname(__file__), 'steps', 'log.cfg'))),
         # The file_name parameters are *required*
@@ -194,7 +194,7 @@ def test_pipeline_commandline_invalid_args():
     from io import StringIO
 
     args = [
-        'jwst..stpipe.tests.test_pipeline.TestPipeline',
+        'jwst.stpipe.tests.test_pipeline.TestPipeline',
         # The file_name parameters are *required*, and one of them
         # is missing, so we should get a message to that effect
         # followed by the commandline usage message.

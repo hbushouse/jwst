@@ -131,15 +131,15 @@ class LinearPipeline(Pipeline):
                 mode = 'RUN'
 
             if mode == 'BEFORE':
-                from jwst import datamodels
+                from .. import datamodels
 
                 try:
-                    with models.open(filename) as dm:
+                    with datamodels.open(filename) as dm:
                         pass
                 except (ValueError, TypeError, IOError):
                     return recurse(mode, filename, pipeline_steps[1:])
                 else:
-                    dm = models.open(filename)
+                    dm = datamodels.open(filename)
                     return recurse(mode, dm, pipeline_steps[1:])
 
             elif mode == 'RUN':

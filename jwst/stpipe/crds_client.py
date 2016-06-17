@@ -65,7 +65,7 @@ def get_multiple_reference_paths(input_file, reference_file_types):
 
     Returns { filetype : filepath or "N/A", ... }
     """
-    from jwst import datamodels
+    from .. import datamodels
 
     gc.collect()
 
@@ -73,11 +73,11 @@ def get_multiple_reference_paths(input_file, reference_file_types):
         return {}
 
     if six.PY2:
-        model_types = (str, unicode, models.DataModel)
+        model_types = (str, unicode, datamodels.DataModel)
     else:
-        model_types = (str, models.DataModel)
+        model_types = (str, datamodels.DataModel)
     if isinstance(input_file, model_types):
-        with models.open(input_file) as dm:
+        with datamodels.open(input_file) as dm:
             data_dict = dm.to_flat_dict(include_arrays=False)
     else:
         data_dict = _flatten_dict(input_file)
@@ -113,7 +113,7 @@ def get_reference_file(input_file, reference_file_type):
 
     Parameters
     ----------
-    input_file : jwst_lib.models.ModelBase instance
+    input_file : jwst.datamodels.ModelBase instance
         A model of the input file.  Metadata on this input file will
         be used by the CRDS "bestref" algorithm to obtain a reference
         file.

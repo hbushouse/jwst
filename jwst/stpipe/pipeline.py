@@ -120,12 +120,12 @@ class Pipeline(Step):
         Precache all of the expected reference files in this Pipeline
         and all of its constituent Steps process method is called.
         """
-        from jwst import datamodels
+        from .. import datamodels
         gc.collect()
         if self._is_association_file(input_file):
             return 
         try:
-            with models.open(input_file) as model:
+            with datamodels.open(input_file) as model:
                 pass
         except (ValueError, TypeError, IOError):
             self.log.info(

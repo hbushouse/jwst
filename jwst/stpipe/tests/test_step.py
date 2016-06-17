@@ -110,7 +110,7 @@ def test_step_from_commandline_class():
     from .. import Step
 
     args = [
-        'jwst..stpipe.tests.steps.AnotherDummyStep',
+        'jwst.stpipe.tests.steps.AnotherDummyStep',
         '--par1=58', '--par2=hij klm'
         ]
 
@@ -198,14 +198,14 @@ def test_extra_parameter():
 
 def test_crds_override():
     from .steps import AnotherDummyStep
-    from jwst import datamodels
+    from ... import datamodels
 
     step = AnotherDummyStep(
         "SomeOtherStepOriginal",
         par1=42.0, par2="abc def",
         override_flat_field=join(dirname(__file__), 'data', 'flat.fits'))
 
-    fd = step.get_reference_file(models.open(), 'flat_field')
+    fd = step.get_reference_file(datamodels.open(), 'flat_field')
     assert fd == join(dirname(__file__), 'data', 'flat.fits')
 
 
@@ -223,7 +223,7 @@ def test_save_model():
     shutil.copyfile(orig_filename, temp_filename)
 
     args = [
-        'jwst..stpipe.tests.steps.SaveStep',
+        'jwst.stpipe.tests.steps.SaveStep',
         temp_filename
     ]
 
